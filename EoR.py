@@ -8,45 +8,90 @@ params = np.load('ParamsWNF.npy')
 # Streamlit app
 st.title("3D Scatter Plot Visualization")
 
-# Dropdown inputs
+# Dropdown input for varied_variable
 varied_variable = st.selectbox("Select Variable:", ['xHI', 'MSE', 'R^2'])
-model_specifics = st.selectbox("Select Model:", ['UiT', 'ViT', 'UNet'])
-
-# Load the appropriate variable based on user input
-if varied_variable == 'R^2':
-    variable = np.load(f'R2_{model_specifics}.npy')
-    variable[variable < 0.0] = 0.0
-elif varied_variable == 'MSE':
-    variable = np.load(f'MSE_{model_specifics}.npy')
-else:
-    variable = params[:, 3]
 
 # 3 Spatial variables
 Mh_min = params[:, 0]
 Nion = params[:, 1]
 Rmfp = params[:, 2]
 
-custom_color_scale = [
-    (np.min(variable), "black"),
-    (np.mean(variable),  "#8c2981"),
-    (np.max(variable), "white"),
-]
+# Function to load and process data for the chosen variable
+def load_variable(model_specific):
+    if varied_variable == 'R^2':
+        variable = np.load(f'R2_{model_specific}.npy')
+        variable[variable < 0.0] = 0.0
+    elif varied_variable == 'MSE':
+        variable = np.load(f'MSE_{model_specific}.npy')
+    else:  # For 'xHI'
+        variable = params[:, 3]
+    return variable
 
-# Create 3D scatter plot with xHI as color using the Magma color scale
-fig = px.scatter_3d(
+# UiT Model
+st.subheader("UiT Model")
+variable_uiT = load_variable('UiT')
+fig_uiT = px.scatter_3d(
     x=Mh_min, 
     y=Nion, 
     z=Rmfp, 
-    color=variable,
-    title=f"Variation of {varied_variable} with M<sub>h,min</sub>, N<sub>ion</sub>, and R<sub>mfp</sub>",
+    color=variable_uiT,
+    title=f"Variation of {varied_variable} with M<sub>h,min</sub>, N<sub>ion</sub>, and R<sub>mfp</sub> (UiT)",
     labels={
-        'x': 'M<sub>h,min</sub>',  # Subscript for M_h,min
-        'y': 'N<sub>ion</sub>',     # Subscript for N_ion
-        'z': 'R<sub>mfp</sub>',     # Subscript for R_mfp
-        'color': f'{varied_variable}'   # Subscript for x_HI
+        'x': 'M<sub>h,min</sub>',
+        'y': 'N<sub>ion</sub>',
+        'z': 'R<sub>mfp</sub>',
+        'color': f'{varied_variable}'
     },
-    color_continuous_scale=custom_color_scale   # Use the Magma color scale
+    color_continuous_scale=[
+        (np.min(variable_uiT), "black"),
+        (np.mean(variable_uiT), "#8c2981"),
+        (np.max(variable_uiT), "white")
+    ]
 )
+st.plotly_chart(fig_uiT)
 
-# Display the plot in Streamlit
-st.plotly_chart(fig)
+# ViT Model
+st.subheader("ViT Model")
+variable_viT = load_variable('ViT')
+fig_viT = px.scatter_3d(
+    x=Mh_min, 
+    y=Nion, 
+    z=Rmfp, 
+    color=variable_viT,
+    title=f"Variation of {varied_variable} with M<sub>h,min</sub>, N<sub>ion</sub>, and R<sub>mfp</sub> (ViT)",
+    labels={
+        'x': 'M<sub>h,min</sub>',
+        'y': 'N<sub>ion</sub>',
+        'z': 'R<sub>mfp</sub>',
+        'color': f'{varied_variable}'
+    },
+    color_continuous_scale=[
+        (np.min(variable_viT), "black"),
+        (np.mean(variable_viT), "#8c2981"),
+        (np.max(variable_viT), "white")
+    ]
+)
+st.plotly_chart(fig_viT)
+
+# UNet Model
+st.subheader("UNet Model")
+variable_unet = load_variable('UNet')
+fig_unet = px.scatter_3d(
+    x=Mh_min, 
+    y=Nion, 
+    z=Rmfp, 
+    color=variable_unet,
+    title=f"Variation of {varied_variable} with M<sub>h,min</sub>, N<sub>ion</sub>, and R<sub>mfp</sub> (UNet)",
+    labels={
+        'x': 'M<sub>h,min</sub>',
+        'y': 'N<sub>ion</sub>',
+        'z': 'R<sub>mfp</sub>',
+        'color': f'{varied_variable}'
+    },
+    color_continuous_scale=[
+        (np.min(variable_unet), "black"),
+        (np.mean(variable_unet), "#8c2981"),
+        (np.max(variable_unet), "white")
+    ]
+)
+st.plotly_chart(fig_unet)
