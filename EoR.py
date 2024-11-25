@@ -26,6 +26,12 @@ Mh_min = params[:, 0]
 Nion = params[:, 1]
 Rmfp = params[:, 2]
 
+custom_color_scale = [
+    (np.min(variable), "black"),
+    (np.mean(variable),  "#8c2981"),
+    (np.max(variable), "white"),
+]
+
 # Create 3D scatter plot with xHI as color using the Magma color scale
 fig = px.scatter_3d(
     x=Mh_min, 
@@ -39,7 +45,7 @@ fig = px.scatter_3d(
         'z': 'R<sub>mfp</sub>',     # Subscript for R_mfp
         'color': f'{varied_variable}'   # Subscript for x_HI
     },
-    color_continuous_scale=px.colors.sequential.Magma  # Use the Magma color scale
+    color_continuous_scale=custom_color_scale   # Use the Magma color scale
 )
 
 # Display the plot in Streamlit
