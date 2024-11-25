@@ -6,11 +6,11 @@ import streamlit as st
 params = np.load('ParamsWNF.npy')
 
 # Streamlit app
-st.set_page_config(page_title="3D Scatter Plot Visualization", layout="wide")
-st.title("3D Scatter Plot Visualization")
+st.set_page_config(page_title="EoR Application", layout="wide")
+st.title("Variation of Performance Metric with EoR Parameters")
 
 # Dropdown input for varied_variable
-varied_variable = st.selectbox("Select Variable:", ['xHI', 'MSE', 'R^2'])
+varied_variable = st.selectbox("Select Variable:", ['MSE', 'R^2', 'xHI'])
 
 # 3 Spatial variables
 Mh_min = params[:, 0]
